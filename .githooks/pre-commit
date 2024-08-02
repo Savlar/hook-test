@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# Fetch the latest changes from the remote repository
+git fetch
+
+# Get the local and remote branches
+LOCAL=$(git rev-parse @)
+REMOTE=$(git rev-parse @{u})
+BASE=$(git merge-base @ @{u})
+
+# Check if local branch is behind the remote branch
+if [ $LOCAL = $REMOTE ]; then
+    echo "Local branch is up to date with remote."
+elif [ $LOCAL = $BASE ]; then
+    echo "Your branch is behind the remote branch. Please pull the latest changes before committing."
+    exit 1
+elif [ $REMOTE = $BASE ]; then
+    echo "Your branch has unpushed commits."
+else
+    echo "Your branch and the remote branch have diverged. Please synchronize with the remote branch."
+    exit 1
+fi
+
